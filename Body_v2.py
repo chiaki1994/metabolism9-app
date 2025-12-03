@@ -6,13 +6,6 @@ import matplotlib.font_manager as fm
 import matplotlib.pyplot as plt
 import os
 
-# GitHub から取り込まれたローカルファイルを参照
-font_path = "fonts/NotoSansJP-Regular.otf"
-
-fm.fontManager.addfont(font_path)
-plt.rcParams["font.family"] = "Noto Sans JP"
-plt.rcParams["axes.unicode_minus"] = False
-
 # =============================================================
 # カスタム：性別ボタン
 # =============================================================
