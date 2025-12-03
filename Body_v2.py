@@ -2,19 +2,22 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
-# ============================================
-# 日本語フォントの読み込み（Streamlit Cloud対応）
-# ============================================
 import matplotlib.font_manager as fm
 import matplotlib.pyplot as plt
+import os
 
-font_path = "fonts/HiraginoSans.ttc"   # ← リポジトリにアップしたフォント
+# Google の Noto Sans JP フォントをダウンロード
+font_url = "https://github.com/googlefonts/noto-cjk/raw/main/Sans/OTF/Japanese/NotoSansJP-Regular.otf"
+font_path = "/tmp/NotoSansJP-Regular.otf"
+
+if not os.path.exists(font_path):
+    import urllib.request
+    urllib.request.urlretrieve(font_url, font_path)
+
+# Matplotlib に登録
 fm.fontManager.addfont(font_path)
-
-plt.rcParams["font.family"] = "Hiragino Sans"   # ← フォント名はファイルに合わせる
+plt.rcParams["font.family"] = "Noto Sans JP"
 plt.rcParams["axes.unicode_minus"] = False
-
 
 # =============================================================
 # カスタム：性別ボタン
