@@ -6,6 +6,10 @@ import matplotlib.font_manager as fm
 import matplotlib.pyplot as plt
 import os
 
+plt.rcParams["font.family"] = "DejaVu Sans"
+plt.rcParams["axes.unicode_minus"] = False
+
+
 # =============================================================
 # カスタム：性別ボタン
 # =============================================================
