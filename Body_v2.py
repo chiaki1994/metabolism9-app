@@ -278,24 +278,100 @@ elif st.session_state.page == 2:
     weight = st.session_state.weight
     fat_input = st.session_state.fat_input
 
-    bmi = weight / ((height/100)**2)
+    # ---- 身体データ計算 ----
+    bmi = weight / ((height / 100) ** 2)
 
     if fat_input.strip() == "":
-        fat_pct = 1.20*bmi + 0.23*age - (16.2 if sex=="男性" else 5.4)
+        # 体脂肪率を推定
+        fat_pct = 1.20 * bmi + 0.23 * age - (16.2 if sex == "男性" else 5.4)
     else:
         fat_pct = float(fat_input)
 
-    ffm = weight * (1 - fat_pct/100)
-    bmr = (13.397*weight + 4.799*height - 5.677*age + 88.362) if sex=="男性" else \
-          (9.247*weight + 3.098*height - 4.330*age + 447.593)
-    burn = ffm + bmr*0.01 - fat_pct
+    ffm = weight * (1 - fat_pct / 100)
+    bmr = (
+        13.397 * weight + 4.799 * height - 5.677 * age + 88.362
+        if sex == "男性"
+        else 9.247 * weight + 3.098 * height - 4.330 * age + 447.593
+    )
+    burn = ffm + bmr * 0.01 - fat_pct
 
-    st.write("### 身体データ")
-    st.write(f"**BMI:** {bmi:.1f} / **体脂肪率:** {fat_pct:.1f}% / **燃焼スコア:** {burn:.1f}")
+    # ---- 結果カード ----
+    st.markdown(
+        f"""
+        <div style='background-color:#f9f9f9;padding:20px;
+                    border-radius:15px;border:1px solid #ddd;margin:20px 0;'>
+          <h4 style='text-align:center;'>身体データ</h4>
+          <p style='text-align:center;'>
+            BMI：<b>{bmi:.1f}</b>　
+            体脂肪率：<b>{fat_pct:.1f}%</b>　
+            燃焼スコア：<b>{burn:.1f}</b>
+          </p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
-    # グラフ（フォントなし OK）
+    # ---- BMI棒グラフ ----
     fig, ax = plt.subplots(figsize=(6, 1.2))
     ax.barh([""], [bmi], color="orange")
-    ax.axvline(18.5, color="blue", linestyle="--")
-    ax.axvline(25, color="red", linestyle="--")
+    ax.axvline(18.5, color="blue", linestyle="--", label="やせ")
+    ax.axvline(25, color="red", linestyle="--", label="肥満")
+    ax.set_xlim(10, 35)
+    ax.set_xlabel("BMI")
+    ax.legend()
     st.pyplot(fig)
+
+    # ---- 燃焼スコア棒グラフ ----
+    fig2, ax2 = plt.subplots(figsize=(6, 1.2))
+    ax2.barh([""], [burn], color="orange")
+    ax2.axvline(50, color="green", linestyle="--", label="平均的な燃焼スコア")
+    ax2.set_xlim(0, 100)
+    ax2.set_xlabel("燃焼スコア")
+    ax2.legend()
+    st.pyplot(fig2)
+
+    # ---- レーダーチャート用データ読み込み ----
+    @st.cache_data
+    def load_survey_df():
+        # Cloud では、この Excel をリポジトリに入れて
+        # 同じ階層に置いた場合: 単にファイル名だけでOK
+        return pd.read_excel("synthetic_inbody_300_with_survey.xlsx")
+
+    df = load_survey_df()
+
+    # 全体平均（各領域5問ずつの平均 → さらに領域平均）
+    overall_means = [
+        df[[f"Q{1 + i*5}", f"Q{2 + i*5}", f"Q{3 + i*5}", f"Q{4 + i*5}", f"Q{5 + i*5}"]]
+        .mean()
+        .mean()
+        for i in range(6)
+    ]
+
+    # ユーザーのスコア（各領域5問の平均）
+    user_scores = [
+        np.mean([int(st.session_state.answers[f"Q{idx}"]) for idx in range(i*5, i*5 + 5)])
+        for i in range(6)
+    ]
+
+    categories = ["食事", "運動", "飲酒", "仕事", "睡眠", "ストレス"]
+    N = len(categories)
+    angles = np.linspace(0, 2 * np.pi, N, endpoint=False).tolist()
+    angles += angles[:1]  # 閉じる用
+
+    fig3 = plt.figure(figsize=(6, 6))
+    ax3 = plt.subplot(111, polar=True)
+    ax3.set_ylim(1, 7)
+
+    # 全体平均
+    ax3.plot(angles, overall_means + [overall_means[0]], color="skyblue", linewidth=2, label="平均")
+    ax3.fill(angles, overall_means + [overall_means[0]], color="skyblue", alpha=0.15)
+
+    # ユーザー
+    ax3.plot(angles, user_scores + [user_scores[0]], color="orange", linewidth=2.5, label="あなた")
+    ax3.fill(angles, user_scores + [user_scores[0]], color="orange", alpha=0.3)
+
+    ax3.set_xticks(angles[:-1])
+    ax3.set_xticklabels(categories)
+    ax3.legend(loc="upper right", bbox_to_anchor=(1.2, 1.1))
+
+    st.pyplot(fig3)
