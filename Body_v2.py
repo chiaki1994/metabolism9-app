@@ -5,17 +5,18 @@ import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 import matplotlib.pyplot as plt
 import os
-import base64
-import matplotlib.pyplot as plt
-from matplotlib import font_manager
 
-font_bytes = base64.b64decode(YOUR_FONT_BASE64_STRING)
+font_path = "/System/Library/Fonts/ヒラギノ角ゴシック W3.ttc"  
+# ← ヒラギノは禁止なので、代わりに Noto Sans JP を使いたい場合はここにパスを書く
 
-with open("NotoSansJP.otf", "wb") as f:
-    f.write(font_bytes)
+with open(font_path, "rb") as f:
+    encoded = base64.b64encode(f.read()).decode("utf-8")
 
-font_manager.fontManager.addfont("NotoSansJP.otf")
-plt.rcParams["font.family"] = "Noto Sans JP"
+with open("font_base64.txt", "w") as f:
+    f.write(encoded)
+
+print("base64 保存完了：font_base64.txt")
+
 
 
 # =============================================================
