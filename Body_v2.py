@@ -5,9 +5,17 @@ import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 import matplotlib.pyplot as plt
 import os
+import base64
+import matplotlib.pyplot as plt
+from matplotlib import font_manager
 
-plt.rcParams["font.family"] = "DejaVu Sans"
-plt.rcParams["axes.unicode_minus"] = False
+font_bytes = base64.b64decode(YOUR_FONT_BASE64_STRING)
+
+with open("NotoSansJP.otf", "wb") as f:
+    f.write(font_bytes)
+
+font_manager.fontManager.addfont("NotoSansJP.otf")
+plt.rcParams["font.family"] = "Noto Sans JP"
 
 
 # =============================================================
