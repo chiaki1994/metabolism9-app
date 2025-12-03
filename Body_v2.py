@@ -4,15 +4,6 @@ import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 
 # =========================
-# 日本語フォント設定
-# =========================
-font_path = "/System/Library/Fonts/ヒラギノ角ゴシック W3.ttc"
-fm.fontManager.addfont(font_path)
-plt.rcParams["font.family"] = "Hiragino Sans"
-plt.rcParams["axes.unicode_minus"] = False
-
-
-# =========================
 # BurnScore 計算
 # =========================
 def calc_burnscore(ffm, bmr, fat_pct):
