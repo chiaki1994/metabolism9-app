@@ -6,15 +6,10 @@ import matplotlib.font_manager as fm
 import matplotlib.pyplot as plt
 import os
 
-font_path = "fonts/NotoSansJP-Regular.ttf"
+font_path = "fonts/NotoSansJP-VariableFont_wght.ttf"
 fm.fontManager.addfont(font_path)
 plt.rcParams["font.family"] = "Noto Sans JP"
 plt.rcParams["axes.unicode_minus"] = False
-
-fig, ax = plt.subplots()
-ax.set_title("日本語タイトルテスト")
-ax.plot([1,2,3])
-st.pyplot(fig)
 
 
 # =============================================================
