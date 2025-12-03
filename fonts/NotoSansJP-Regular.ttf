@@ -1,1 +1,9 @@
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+
+# フォント登録（Cloudで100％動く）
+font_path = "fonts/NotoSansJP-Regular.ttf"
+fm.fontManager.addfont(font_path)
+plt.rcParams["font.family"] = "Noto Sans JP"
+plt.rcParams["axes.unicode_minus"] = False
 
