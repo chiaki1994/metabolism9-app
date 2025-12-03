@@ -6,15 +6,9 @@ import matplotlib.font_manager as fm
 import matplotlib.pyplot as plt
 import os
 
-# Google の Noto Sans JP フォントをダウンロード
-font_url = "https://github.com/googlefonts/noto-cjk/raw/main/Sans/OTF/Japanese/NotoSansJP-Regular.otf"
-font_path = "/tmp/NotoSansJP-Regular.otf"
+# GitHub から取り込まれたローカルファイルを参照
+font_path = "fonts/NotoSansJP-Regular.otf"
 
-if not os.path.exists(font_path):
-    import urllib.request
-    urllib.request.urlretrieve(font_url, font_path)
-
-# Matplotlib に登録
 fm.fontManager.addfont(font_path)
 plt.rcParams["font.family"] = "Noto Sans JP"
 plt.rcParams["axes.unicode_minus"] = False
