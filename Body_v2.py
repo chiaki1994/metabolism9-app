@@ -3,6 +3,19 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+# ============================================
+# 日本語フォントの読み込み（Streamlit Cloud対応）
+# ============================================
+import matplotlib.font_manager as fm
+import matplotlib.pyplot as plt
+
+font_path = "fonts/HiraginoSans.ttc"   # ← リポジトリにアップしたフォント
+fm.fontManager.addfont(font_path)
+
+plt.rcParams["font.family"] = "Hiragino Sans"   # ← フォント名はファイルに合わせる
+plt.rcParams["axes.unicode_minus"] = False
+
+
 # =============================================================
 # カスタム：性別ボタン
 # =============================================================
